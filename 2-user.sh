@@ -8,39 +8,36 @@
 #  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝   ╚═╝    ╚═════╝ ╚══════╝
 #-------------------------------------------------------------------------
 
-echo -e "\nFINAL SETUP AND CONFIGURATION"
-echo "--------------------------------------"
-echo "-- GRUB EFI Bootloader Install&Check--"
-echo "--------------------------------------"
-if [[ -d "/sys/firmware/efi" ]]; then
-    grub-install --efi-directory=/boot ${DISK}
-fi
-grub-mkconfig -o /boot/grub/grub.cfg
+echo -e "\nINSTALLING AUR SOFTWARE\n"
+# You can solve users running this script as root with this and then doing the same for the next for statement. However I will leave this up to you.
 
-# ------------------------------------------------------------------------
+echo "CLONING: YAY"
+cd ~
+git clone "https://aur.archlinux.org/yay.git"
+cd ${HOME}/yay
+makepkg -si --noconfirm
+cd ~
+touch "$HOME/.cache/zshhistory"
+git clone "https://github.com/ChrisTitusTech/zsh"
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $HOME/powerlevel10k
+ln -s "$HOME/zsh/.zshrc" $HOME/.zshrc
 
-echo -e "\nEnabling essential services"
+PKGS=(
+'autojump'
+'awesome-terminal-fonts'
+'brave-bin' # Brave Browser
+)
 
-ntpd -qg
-systemctl enable ntpd.service
-systemctl disable dhcpcd.service
-systemctl stop dhcpcd.service
-systemctl enable NetworkManager.service
-systemctl enable bluetooth
-echo "
-###############################################################################
-# Cleaning
-###############################################################################
-"
-# Remove no password sudo rights
-sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
-# Add sudo rights
-sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+for PKG in "${PKGS[@]}"; do
+    yay -S --noconfirm $PKG
+done
 
-# Replace in the same state
-cd $pwd
-echo "
-###############################################################################
-# Done - Please Eject Install Media and Reboot
-###############################################################################
-"
+export PATH=$PATH:~/.local/bin
+cp -r $HOME/ArchTitus/dotfiles/* $HOME/.config/
+pip install konsave
+konsave -i $HOME/ArchTitus/kde.knsv
+sleep 1
+konsave -a kde
+
+echo -e "\nDone!\n"
+exit
