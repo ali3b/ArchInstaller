@@ -66,6 +66,10 @@ PKGS=(
 	'linux'
 	'linux-firmware'
 	'linux-headers'
+    
+    #BOOT MANAGEMENT
+    'grub'
+    'grub-customizer'
 
 	#XORG
 	'xorg-server'           # XOrg server
