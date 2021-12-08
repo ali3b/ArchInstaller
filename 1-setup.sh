@@ -104,6 +104,7 @@ PKGS=(
     # TERMINAL UTILITIES --------------------------------------------------
 
     'bash-completion'       # Tab completion for Bash
+    'sudo'
     #'bc'                    # Precision calculator language
     #'bleachbit'             # File deletion utility
     'curl'                  # Remote content retrieval
